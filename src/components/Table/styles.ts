@@ -7,6 +7,7 @@ export const Container = styled.div`
 `;
 
 export const Tbody = styled.tbody`
+    
 `;
 
 export const Thead = styled.thead`
@@ -36,16 +37,21 @@ export const Tr = styled.tr`
 `;
 
 export const Td = styled.td`
+    overflow-wrap: break-word;
     /* border: 1px solid rgba(0, 0, 0,0.2); */
     max-width:600px;
     min-width:30px;
     width:auto;
     padding:8px;
     text-align:center;
-
     >img{
-        max-width:100px;
+        width:200px;
     }  
+
+    button{
+        cursor: pointer;
+    }
+    
 `;
 
 export const Table = styled.table`
