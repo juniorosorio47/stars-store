@@ -1,22 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import api from '../../services/api';
 import { useToast } from '../../hooks/toast';
+import Modal from '../Modal';
 
 interface IProductViewProps {
     product_id:number;
+    isOpen:boolean;
 };
 
 interface IProduct {
     id: number;
     name: string;
     description: string;
-    image_url:string;
+    image:string;
     price: number;
     inventory: number;
     multiple: number;
 }
 
-const ProductView: React.FunctionComponent<IProductViewProps> = ({product_id}) => {
+const ProductView: React.FunctionComponent<IProductViewProps> = ({product_id, isOpen}) => {
+
+    const [openEdit, setOpenEdit] = useState(isOpen)
+
 
     const [productInfo, setProductInfo] = useState<IProduct>()
     const { addToast } = useToast();
@@ -24,7 +29,6 @@ const ProductView: React.FunctionComponent<IProductViewProps> = ({product_id}) =
     const getProductInfo = useCallback(async () => {
         try {
             const { data } = await api.get(`/products/${product_id}`);
-            console.log(data);
 
             setProductInfo(data.data)
 
@@ -42,27 +46,36 @@ const ProductView: React.FunctionComponent<IProductViewProps> = ({product_id}) =
 
         if(product_id){
             getProductInfo();
+            setOpenEdit(true)
         }
+
         
-    },[]);
+        
+    },[openEdit]);
+
+
 
 
     return <>
         {productInfo && <>
-            <dialog title="Product Details" open={true}>
-                <div>
-                    <img src={productInfo.image_url} alt={`${productInfo.name} image`} />
-                </div>
-                <div>
-                    <h1>{productInfo.name}</h1>
-                    <p>{productInfo.description}</p>
-                </div>
-                <div>
-                    <span>Multiple: {productInfo.multiple}</span>
-                    <span>Inventory: {productInfo.inventory}</span>
-                    <span>Price: {productInfo.price}</span>
-                </div>
-            </dialog>
+            <Modal title="Product Details" isOpen={openEdit} setIsOpen={setOpenEdit}>
+                <title>Product Details</title>
+                    <>
+                        <div>
+                            <img src={productInfo.image} alt={`${productInfo.name} image`} />
+                        </div>
+                        <div>
+                            <h1>{productInfo.name}</h1>
+                            <p>{productInfo.description}</p>
+                        </div>
+                        <div>
+                            <span>Multiple: {productInfo.multiple}</span>
+                            <span>Inventory: {productInfo.inventory}</span>
+                            <span>Price: {productInfo.price}</span>
+                        </div>
+                    </>
+                
+            </Modal>
         </>}
     </>;
 };
